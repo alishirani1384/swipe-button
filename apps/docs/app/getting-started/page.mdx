@@ -1,0 +1,50 @@
+import { Tabs } from 'nextra/components'
+
+# Getting Started
+
+Follow these steps to add the swipe button to your project.
+
+### Installation
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tabs.Tab>
+    ```bash
+    pnpm add swipe-button  
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```bash
+    npm install swipe-button 
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```bash
+    yarn add swipe-button 
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+### Basic Usage
+
+Import the component and its base styles, then use it in your application.
+
+```jsx filename="YourComponent.jsx"
+import { SwipeButton } from 'swipe-button';
+import 'swipe-button/dist/styles.css';
+
+const App = () => {
+  const handleSuccess = () => {
+    console.log('Action successful!');
+  };
+
+  return (
+    <div style={{ width: '300px' }}>
+      <SwipeButton railText="Swipe to proceed" onSuccess={handleSuccess}>
+        <span>>></span>
+      </SwipeButton>
+    </div>
+  );
+};
+
+export default App;
+

@@ -1,0 +1,15 @@
+# API Reference
+
+The `SwipeButton` component accepts the following props:
+
+| Prop           | Type                     | Default     | Description                                                                 |
+| -------------- | ------------------------ | ----------- | --------------------------------------------------------------------------- |
+| `onSuccess`    | `() => void`             | _Required_  | Callback function triggered on a successful swipe.                          |
+| `onFail`       | `() => void`             | `undefined` | Optional callback triggered when a swipe fails to meet the threshold.       |
+| `disabled`     | `boolean`                | `false`     | If `true`, the button is inactive and visually disabled.                    |
+| `reverseSwipe` | `boolean`                | `false`     | If `true`, the swipe direction is from right to left.                       |
+| `delta`        | `number`                 | `undefined` | The pixel distance from the start required to trigger a successful swipe. Defaults to the full swipeable width. |
+| `children`     | `React.ReactNode`        | `undefined` | The content inside the slider (e.g., an icon, text, or custom element).     |
+| `title`        | `string`                 | `undefined` | A title for the swipe container, used for `aria-label` for accessibility.   |
+| `railText`     | `string`                 | `undefined` | The text displayed on the rail behind the slider.                           |
+| `overlayText`  | `string`                 | `undefined` | The text displayed in the overlay that reveals on swipe.                    |

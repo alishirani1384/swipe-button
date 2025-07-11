@@ -1,135 +1,192 @@
-# Turborepo starter
+# React Unstyled Swipe Button
 
-This Turborepo starter is maintained by the Turborepo core team.
+[![npm version](https://img.shields.io/npm/v/@your-npm-username/react-swipe-button.svg)](https://www.npmjs.com/package/@your-npm-username/react-swipe-button)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@your-npm-username/react-swipe-button)](https://bundlephobia.com/package/@your-npm-username/react-swipe-button)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## Using this example
+A lightweight, unstyled, and fully accessible swipe-to-action button for modern React applications. Built from scratch with zero dependencies.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+### [**Live Demo & Showcase →**](https://your-homepage-url.com)
+
+*(Link to your deployed `apps/web` homepage)*
+
+![React Swipe Button Showcase GIF](https://your-link-to-a-demo-gif.com/demo.gif)
+*(**Pro-tip:** Record a short GIF of your showcase page and upload it here!)*
+
+## Why React Unstyled Swipe Button?
+
+This component was built to provide a flexible and robust foundation for any "swipe-to-action" feature. Unlike other libraries, it ships with **zero styles**, giving you complete control over the look and feel. It's perfect for design systems, custom UIs, and scenarios where you don't want to fight with pre-existing CSS.
+
+### Key Features
+
+*   ✅ **Zero Dependencies:** Incredibly lightweight with no other packages to manage.
+*   🎨 **Completely Unstyled:** Bring your own styles. Works perfectly with standard CSS, CSS Modules, CSS-in-JS (like Styled Components), or utility-class frameworks (like Tailwind CSS).
+*   📱 **Modern & Smooth:** Built with React hooks for a fluid, touch-friendly experience on any device.
+*   🎛️ **Highly Customizable:** Control text, icons, colors, swipe direction, and trigger sensitivity through a simple prop API.
+*   ♿️ **Accessibility in Mind:** Designed with `aria` attributes for screen reader support.
+
+## Installation
+
+Choose your favorite package manager:
+
+```bash
+# PNPM
+pnpm add @your-npm-username/react-swipe-button
+
+# NPM
+npm install @your-npm-username/react-swipe-button
+
+# Yarn
+yarn add @your-npm-username/react-swipe-button
 ```
 
-## What's inside?
+## Basic Usage
 
-This Turborepo includes the following packages/apps:
+Import the `SwipeButton` component and its minimal structural CSS. Then, provide a success callback and the content you want to display.
 
-### Apps and Packages
+```jsx
+import React from 'react';
+import { SwipeButton } from '@your-npm-username/react-swipe-button';
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+// Import the essential structural styles
+import '@your-npm-username/react-swipe-button/styles.css';
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+const App = () => {
+  const handleSuccess = () => {
+    console.log('Action Confirmed!');
+  };
 
-### Utilities
+  return (
+    <div style={{ width: '350px', margin: '2rem auto' }}>
+      <SwipeButton railText="Swipe to Confirm" onSuccess={handleSuccess}>
+        <span style={{ fontWeight: 'bold' }}>&gt;&gt;</span>
+      </SwipeButton>
+    </div>
+  );
+};
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+export default App;
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## API Reference (Props)
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+The component is configured through a simple set of props:
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+| Prop           | Type                | Default     | Description                                                                  |
+| -------------- | ------------------- | ----------- | ---------------------------------------------------------------------------- |
+| `onSuccess`    | `() => void`        | _Required_  | Callback function triggered on a successful swipe.                           |
+| `onFail`       | `() => void`        | `undefined` | Optional callback triggered when a swipe fails to meet the threshold.        |
+| `disabled`     | `boolean`           | `false`     | If `true`, the button is inactive and visually disabled.                     |
+| `reverseSwipe` | `boolean`           | `false`     | If `true`, the swipe direction is from right to left.                        |
+| `delta`        | `number`            | `undefined` | The pixel distance from the start required to trigger success. Defaults to the full swipeable width. |
+| `children`     | `React.ReactNode`   | `undefined` | The content for the slider handle (e.g., an icon, text, or custom element).  |
+| `title`        | `string`            | `undefined` | A title for the container, used for the `aria-label` attribute.              |
+| `railText`     | `string`            | `undefined` | The text displayed on the rail behind the slider.                            |
+| `overlayText`  | `string`            | `undefined` | The text displayed in the colored overlay that reveals on swipe.             |
 
-### Develop
+## Customization
 
-To develop all apps and packages, run the following command:
+The power of this component comes from its lack of styling. Here's how you can customize it.
 
-```
-cd my-turborepo
+### 1. Using CSS Variables
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+The easiest way to theme the component is by overriding the default CSS custom properties.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+```css
+/* Your custom stylesheet, e.g., App.css */
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+.my-dark-theme {
+  --swipe-bg-color: #222;
+  --swipe-rail-text-color: #888;
+  --swipe-overlay-color: #0070f3;
+  --swipe-slider-color: #333;
+  --swipe-overlay-text-color: #fff;
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+  /* You can also override structural variables */
+  --swipe-button-height: 56px;
+  --swipe-button-border-radius: 12px;
+}
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+```jsx
+// In your component
+import './App.css';
+import { Lock } from 'lucide-react'; // Example using an icon library
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+<div className="my-dark-theme">
+  <SwipeButton railText="Swipe to unlock" onSuccess={handleSuccess}>
+    <Lock color="white" />
+  </SwipeButton>
+</div>
 ```
 
-## Useful Links
+### 2. Destructive Action Theme
 
-Learn more about the power of Turborepo:
+Create a "delete" button by overriding the colors for a destructive action.
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+```css
+.my-delete-theme {
+  --swipe-bg-color: #ffebeb;
+  --swipe-rail-text-color: #a63333;
+  --swipe-overlay-color: #dc2626;
+  --swipe-slider-color: #f8fafc;
+  --swipe-overlay-text-color: #fff;
+}
+```
+
+```jsx
+import { Trash2 } from 'lucide-react';
+
+<div className="my-delete-theme">
+  <SwipeButton
+    railText="Swipe to Delete"
+    overlayText="Item Deleted"
+    onSuccess={handleSuccess}
+  >
+    <Trash2 color="#dc2626" />
+  </SwipeButton>
+</div>
+```
+
+### 3. Using Styled-Components (or other CSS-in-JS)
+
+You can also wrap the `SwipeButton` in a styled component to apply styles dynamically.
+
+```jsx
+import styled from 'styled-components';
+import { SwipeButton } from '@your-npm-username/react-swipe-button';
+import '@your-npm-username/react-swipe-button/styles.css';
+
+const StyledSwipeButton = styled(SwipeButton)`
+  .swipe-button-container {
+    background-color: #e0f2fe;
+    border: 2px solid #0ea5e9;
+  }
+  .swipe-button-slider {
+    background-color: #0ea5e9;
+    box-shadow: none;
+  }
+  .swipe-button-rail-text {
+    color: #0ea5e9;
+    font-weight: 600;
+  }
+`;
+
+// Later in your app...
+<StyledSwipeButton railText="Swipe to Continue" onSuccess={handleSuccess}>
+  <span style={{ color: 'white', fontSize: '24px' }}>→</span>
+</StyledSwipeButton>
+```
+
+## Contributing
+
+Contributions are welcome! If you have a feature request, bug report, or want to improve the code, please feel free to open an issue or submit a pull request.
+
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
