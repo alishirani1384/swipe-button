@@ -1,6 +1,6 @@
 {
   "name": "swipe-button",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "A lightweight, unstyled, and fully accessible swipe-to-action button for React. Built with zero dependencies.",
   "author": "Your Name <alishiranii1384@gmail.com>",
@@ -29,7 +29,7 @@
     "type": "git",
     "url": "https://github.com/alishirani1384/swipe-button.git"
   },
-  "main": "./dist/index.js", 
+  "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
