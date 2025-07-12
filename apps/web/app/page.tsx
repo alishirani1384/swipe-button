@@ -1,6 +1,6 @@
 "use client";
 
-import { SwipeButton } from "@repo/ui/index";
+import { SwipeButton } from "@repo/ui";
 import React from "react";
 
 // --- Some icons for our showcase ---

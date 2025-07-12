@@ -1,8 +1,7 @@
 # React Unstyled Swipe Button
 
-[![npm version](https://img.shields.io/npm/v/@your-npm-username/react-swipe-button.svg)](https://www.npmjs.com/package/swipe-button)
+[![npm version](https://img.shields.io/npm/v/swipe-button.svg)](https://www.npmjs.com/package/swipe-button)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENCE)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/swipe-button)](https://bundlephobia.com/package/swipe-button)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A lightweight, unstyled, and fully accessible swipe-to-action button for modern React applications. Built from scratch with zero dependencies.
