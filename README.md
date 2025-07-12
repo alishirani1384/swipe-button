@@ -1,8 +1,8 @@
 # React Unstyled Swipe Button
 
-[![npm version](https://img.shields.io/npm/v/@your-npm-username/react-swipe-button.svg)](https://www.npmjs.com/package/@your-npm-username/react-swipe-button)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@your-npm-username/react-swipe-button)](https://bundlephobia.com/package/@your-npm-username/react-swipe-button)
+[![npm version](https://img.shields.io/npm/v/@your-npm-username/react-swipe-button.svg)](https://www.npmjs.com/package/swipe-button)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENCE)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/swipe-button)](https://bundlephobia.com/package/swipe-button)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A lightweight, unstyled, and fully accessible swipe-to-action button for modern React applications. Built from scratch with zero dependencies.
@@ -34,25 +34,22 @@ Choose your favorite package manager:
 
 ```bash
 # PNPM
-pnpm add @your-npm-username/react-swipe-button
+pnpm add swipe-button
 
 # NPM
-npm install @your-npm-username/react-swipe-button
+npm install swipe-button
 
 # Yarn
-yarn add @your-npm-username/react-swipe-button
+yarn add swipe-button
 ```
 
 ## Basic Usage
 
-Import the `SwipeButton` component and its minimal structural CSS. Then, provide a success callback and the content you want to display.
+Import the `SwipeButton` component. Then, provide a success callback and the content you want to display.
 
 ```jsx
 import React from 'react';
-import { SwipeButton } from '@your-npm-username/react-swipe-button';
-
-// Import the essential structural styles
-import '@your-npm-username/react-swipe-button/styles.css';
+import { SwipeButton } from 'swipe-button';
 
 const App = () => {
   const handleSuccess = () => {
@@ -157,8 +154,7 @@ You can also wrap the `SwipeButton` in a styled component to apply styles dynami
 
 ```jsx
 import styled from 'styled-components';
-import { SwipeButton } from '@your-npm-username/react-swipe-button';
-import '@your-npm-username/react-swipe-button/styles.css';
+import { SwipeButton } from 'swipe-button';
 
 const StyledSwipeButton = styled(SwipeButton)`
   .swipe-button-container {
