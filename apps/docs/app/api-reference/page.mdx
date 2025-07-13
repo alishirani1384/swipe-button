@@ -1,15 +1,76 @@
+import { Callout } from 'nextra/components'
+
 # API Reference
 
-The `SwipeButton` component accepts the following props:
+The component is composed of several parts. The main logic and state are handled by `<SwipeButton.Root />`.
 
-| Prop           | Type                     | Default     | Description                                                                 |
-| -------------- | ------------------------ | ----------- | --------------------------------------------------------------------------- |
-| `onSuccess`    | `() => void`             | _Required_  | Callback function triggered on a successful swipe.                          |
-| `onFail`       | `() => void`             | `undefined` | Optional callback triggered when a swipe fails to meet the threshold.       |
-| `disabled`     | `boolean`                | `false`     | If `true`, the button is inactive and visually disabled.                    |
-| `reverseSwipe` | `boolean`                | `false`     | If `true`, the swipe direction is from right to left.                       |
-| `delta`        | `number`                 | `undefined` | The pixel distance from the start required to trigger a successful swipe. Defaults to the full swipeable width. |
-| `children`     | `React.ReactNode`        | `undefined` | The content inside the slider (e.g., an icon, text, or custom element).     |
-| `title`        | `string`                 | `undefined` | A title for the swipe container, used for `aria-label` for accessibility.   |
-| `railText`     | `string`                 | `undefined` | The text displayed on the rail behind the slider.                           |
-| `overlayText`  | `string`                 | `undefined` | The text displayed in the overlay that reveals on swipe.                    |
+### `<SwipeButton.Root />` Props
+
+This is the main container that manages the state. It accepts the following props:
+
+| Prop           | Type         | Default    | Description                                                            |
+| -------------- | ------------ | ---------- | ---------------------------------------------------------------------- |
+| `onSuccess`    | `() => void` | _Required_ | Callback function triggered on a successful swipe.                     |
+| `onFail`       | `() => void` | `undefined`| Optional callback triggered when a swipe fails to meet the threshold.  |
+| `disabled`     | `boolean`    | `false`    | If `true`, the button is inactive and visually disabled.               |
+| `reverseSwipe` | `boolean`    | `false`    | If `true`, the swipe direction is from right to left.                  |
+| `delta`        | `number`     | `undefined`| The pixel distance to trigger success. Defaults to the full width.       |
+
+<Callout>
+  The `Root` component also accepts all standard `div` props like `className` and `style`.
+</Callout>
+
+### Component Parts
+
+These are the building blocks for the UI. They accept all standard `div` props (`className`, `style`, `children`, etc.), allowing for full customization.
+
+- **`<SwipeButton.Rail />`**: The background track of the component.
+- **`<SwipeButton.Overlay />`**: The colored layer that is revealed on swipe.
+- **`<SwipeButton.Slider />`**: The draggable handle that the user interacts with.
+
+## Customization
+
+The recommended way to customize the component is by overriding the default CSS Variables. This gives you complete control over the appearance without having to write complex CSS selectors.
+
+### Example: Creating a Light Theme
+
+You can create a completely different theme by defining a new class in your CSS and providing new values for the color variables.
+
+```css filename="your-styles.css"
+.my-light-theme {
+  --sw-background: 0 0% 98%;
+  --sw-foreground: 240 10% 3.9%;
+  --sw-muted-foreground: 240 3.8% 46.1%;
+  --sw-border: 240 5.9% 90%;
+  --sw-slider: 240 10% 3.9%;
+  --sw-success: 221.2 83.2% 53.3%;
+}
+```
+Then, apply this class to the Root component.
+
+```jsx
+<SwipeButton.Root onSuccess={handleSuccess} className="my-light-theme">
+  {/* ... child components ... */}
+</SwipeButton.Root>
+```
+
+## Full List of CSS Variables
+
+Here are all the variables you can override to customize the default theme.
+
+```css
+/* Color Palette (HSL format is recommended for easy modification) */
+--sw-background: 240 10% 3.9%;
+--sw-foreground: 0 0% 98%;
+--sw-muted-foreground: 240 5% 64.9%;
+--sw-border: 240 3.7% 15.9%;
+--sw-slider: 240 5.9% 90%;
+--sw-success: 142.1 76.2% 36.3%;
+
+/* Structural Properties */
+--sw-height: 48px;
+--sw-slider-width: 40px;
+--sw-border-radius: 9999px;
+--sw-font-size: 14px;
+--sw-transition-duration: 150ms;
+```

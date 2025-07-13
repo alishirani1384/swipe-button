@@ -1,6 +1,6 @@
 {
   "name": "swipe-button",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "description": "A lightweight, unstyled, and fully accessible swipe-to-action button for React. Built with zero dependencies.",
   "author": "Your Name <alishiranii1384@gmail.com>",
@@ -45,7 +45,7 @@
   "scripts": {
     "build": "tsup src/index.tsx --format cjs,esm --dts --external react",
     "dev": "tsup src/index.tsx --format cjs,esm --dts --external react --watch",
-    "clean": "rm -rf .turbo dist"
+    "clean": "rd /s /q .turbo dist"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

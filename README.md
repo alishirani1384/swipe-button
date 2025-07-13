@@ -44,11 +44,12 @@ yarn add swipe-button
 
 ## Basic Usage
 
-Import the `SwipeButton` component. Then, provide a success callback and the content you want to display.
+The component works out-of-the-box with a beautiful default dark theme. Simply compose the parts you need inside the `SwipeButton.Root`.
 
 ```jsx
 import React from 'react';
-import { SwipeButton } from 'swipe-button';
+import { SwipeButton } from '@your-npm-username/react-swipe-button';
+import { ChevronRight } from 'lucide-react'; // Example using a popular icon library
 
 const App = () => {
   const handleSuccess = () => {
@@ -57,9 +58,17 @@ const App = () => {
 
   return (
     <div style={{ width: '350px', margin: '2rem auto' }}>
-      <SwipeButton railText="Swipe to Confirm" onSuccess={handleSuccess}>
-        <span style={{ fontWeight: 'bold' }}>&gt;&gt;</span>
-      </SwipeButton>
+      <SwipeButton.Root onSuccess={handleSuccess}>
+        <SwipeButton.Rail>
+          <span>Swipe to Confirm</span>
+        </SwipeButton.Rail>
+        <SwipeButton.Overlay>
+          <span>Confirmed!</span>
+        </SwipeButton.Overlay>
+        <SwipeButton.Slider>
+          <ChevronRight color="black" />
+        </SwipeButton.Slider>
+      </SwipeButton.Root>
     </div>
   );
 };
@@ -69,19 +78,27 @@ export default App;
 
 ## API Reference (Props)
 
-The component is configured through a simple set of props:
+### `<SwipeButton.Root />`
 
-| Prop           | Type                | Default     | Description                                                                  |
-| -------------- | ------------------- | ----------- | ---------------------------------------------------------------------------- |
-| `onSuccess`    | `() => void`        | _Required_  | Callback function triggered on a successful swipe.                           |
-| `onFail`       | `() => void`        | `undefined` | Optional callback triggered when a swipe fails to meet the threshold.        |
-| `disabled`     | `boolean`           | `false`     | If `true`, the button is inactive and visually disabled.                     |
-| `reverseSwipe` | `boolean`           | `false`     | If `true`, the swipe direction is from right to left.                        |
-| `delta`        | `number`            | `undefined` | The pixel distance from the start required to trigger success. Defaults to the full swipeable width. |
-| `children`     | `React.ReactNode`   | `undefined` | The content for the slider handle (e.g., an icon, text, or custom element).  |
-| `title`        | `string`            | `undefined` | A title for the container, used for the `aria-label` attribute.              |
-| `railText`     | `string`            | `undefined` | The text displayed on the rail behind the slider.                            |
-| `overlayText`  | `string`            | `undefined` | The text displayed in the colored overlay that reveals on swipe.             |
+This is the main container that manages the state and logic. It accepts the following props:
+
+| Prop           | Type         | Default    | Description                                                            |
+| -------------- | ------------ | ---------- | ---------------------------------------------------------------------- |
+| `onSuccess`    | `() => void` | _Required_ | Callback function triggered on a successful swipe.                     |
+| `onFail`       | `() => void` | `undefined`| Optional callback triggered when a swipe fails to meet the threshold.  |
+| `disabled`     | `boolean`    | `false`    | If `true`, the button is inactive and visually disabled.               |
+| `reverseSwipe` | `boolean`    | `false`    | If `true`, the swipe direction is from right to left.                  |
+| `delta`        | `number`     | `undefined`| The pixel distance to trigger success. Defaults to the full width.       |
+
+It also accepts all standard `div` props like `className` and `style`.
+
+### Other Components
+
+The following components are used to build the UI and accept all standard `div` props (`className`, `style`, `children`, etc.).
+
+*   `<SwipeButton.Rail />`: The background track.
+*   `<SwipeButton.Overlay />`: The colored layer that is revealed on swipe.
+*   `<SwipeButton.Slider />`: The draggable handle.
 
 ## Customization
 
@@ -93,87 +110,69 @@ The easiest way to theme the component is by overriding the default CSS custom p
 
 ```css
 /* Your custom stylesheet, e.g., App.css */
-
-.my-dark-theme {
-  --swipe-bg-color: #222;
-  --swipe-rail-text-color: #888;
-  --swipe-overlay-color: #0070f3;
-  --swipe-slider-color: #333;
-  --swipe-overlay-text-color: #fff;
-
-  /* You can also override structural variables */
-  --swipe-button-height: 56px;
-  --swipe-button-border-radius: 12px;
+.light-theme {
+  --sw-background: 0 0% 98%;
+  --sw-foreground: 240 10% 3.9%;
+  --sw-muted-foreground: 240 3.8% 46.1%;
+  --sw-border: 240 5.9% 90%;
+  --sw-slider: 240 10% 3.9%;
+  --sw-success: 221.2 83.2% 53.3%;
 }
 ```
 
 ```jsx
 // In your component
 import './App.css';
-import { Lock } from 'lucide-react'; // Example using an icon library
 
-<div className="my-dark-theme">
-  <SwipeButton railText="Swipe to unlock" onSuccess={handleSuccess}>
-    <Lock color="white" />
-  </SwipeButton>
-</div>
+<SwipeButton.Root onSuccess={handleSuccess} className="light-theme">
+  {/* ... child components ... */}
+</SwipeButton.Root>
 ```
 
-### 2. Destructive Action Theme
+### 2. Full List of CSS Variables
 
-Create a "delete" button by overriding the colors for a destructive action.
+Here are all the variables you can override:
 
 ```css
-.my-delete-theme {
-  --swipe-bg-color: #ffebeb;
-  --swipe-rail-text-color: #a63333;
-  --swipe-overlay-color: #dc2626;
-  --swipe-slider-color: #f8fafc;
-  --swipe-overlay-text-color: #fff;
-}
-```
+/* Color Palette (HSL format) */
+--sw-background: 240 10% 3.9%;
+--sw-foreground: 0 0% 98%;
+--sw-muted-foreground: 240 5% 64.9%;
+--sw-border: 240 3.7% 15.9%;
+--sw-slider: 240 5.9% 90%;
+--sw-success: 142.1 76.2% 36.3%;
 
-```jsx
-import { Trash2 } from 'lucide-react';
-
-<div className="my-delete-theme">
-  <SwipeButton
-    railText="Swipe to Delete"
-    overlayText="Item Deleted"
-    onSuccess={handleSuccess}
-  >
-    <Trash2 color="#dc2626" />
-  </SwipeButton>
-</div>
+/* Structural Properties */
+--sw-height: 48px;
+--sw-slider-width: 40px;
+--sw-border-radius: 9999px;
+--sw-font-size: 14px;
+--sw-transition-duration: 150ms;
 ```
 
 ### 3. Using Styled-Components (or other CSS-in-JS)
 
-You can also wrap the `SwipeButton` in a styled component to apply styles dynamically.
+The compound API works perfectly with CSS-in-JS libraries.
 
 ```jsx
 import styled from 'styled-components';
-import { SwipeButton } from 'swipe-button';
+import { SwipeButton } from '@your-npm-username/react-swipe-button';
 
-const StyledSwipeButton = styled(SwipeButton)`
-  .swipe-button-container {
-    background-color: #e0f2fe;
-    border: 2px solid #0ea5e9;
-  }
-  .swipe-button-slider {
-    background-color: #0ea5e9;
-    box-shadow: none;
-  }
-  .swipe-button-rail-text {
-    color: #0ea5e9;
-    font-weight: 600;
-  }
+const StyledSlider = styled(SwipeButton.Slider)`
+  background: linear-gradient(to right, #ff8a00, #e52e71);
+  box-shadow: 0 0 15px #e52e71;
+`;
+
+const StyledRoot = styled(SwipeButton.Root)`
+  border: 1px solid #444;
 `;
 
 // Later in your app...
-<StyledSwipeButton railText="Swipe to Continue" onSuccess={handleSuccess}>
-  <span style={{ color: 'white', fontSize: '24px' }}>→</span>
-</StyledSwipeButton>
+<StyledRoot onSuccess={handleSuccess}>
+  <SwipeButton.Rail>Swipe with Style</SwipeButton.Rail>
+  <SwipeButton.Overlay>Done!</SwipeButton.Overlay>
+  <StyledSlider />
+</StyledRoot>
 ```
 
 ## Contributing

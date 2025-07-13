@@ -1,115 +1,143 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { createContext, forwardRef, useContext, useEffect, useRef, useState } from "react";
 
-const styles = `
-:root {
-  --swipe-button-height: 50px;
-  --swipe-button-border-radius: 25px;
-  --swipe-slider-width: 50px;
-  --swipe-slider-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+const defaultStyles = `
+  :root {
+    /* Color Palette (HSL format for easy modification) */
+    --sw-background: 240 10% 3.9%;
+    --sw-foreground: 0 0% 98%;
+    --sw-muted-foreground: 240 5% 64.9%;
+    --sw-border: 240 3.7% 15.9%;
+    --sw-slider: 240 5.9% 90%;
+    --sw-success: 142.1 76.2% 36.3%;
 
-  --swipe-bg-color: #f0f0f0;
-  --swipe-rail-text-color: #555;
-  --swipe-overlay-color: #4caf50;
-  --swipe-overlay-text-color: white;
-  --swipe-slider-color: #ffffff;
-}
+    /* Structural Properties */
+    --sw-height: 48px;
+    --sw-slider-width: 40px;
+    --sw-border-radius: 9999px;
+    --sw-font-size: 14px;
+    --sw-transition-duration: 150ms;
+  }
 
-.swipe-button-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 50px; /* Example height */
-  background-color: #f0f0f0; /* Default rail color */
-  border-radius: 25px; /* Pill shape */
-  overflow: hidden;
-  user-select: none; /* Prevents text selection during drag */
-  cursor: grab;
-}
+  .swipe-button__root {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--sw-height);
+    background-color: hsl(var(--sw-background));
+    border: 1px solid hsl(var(--sw-border));
+    border-radius: var(--sw-border-radius);
+    overflow: hidden;
+    user-select: none;
+    touch-action: none; /* Prevents scrolling on mobile */
+    font-family: sans-serif;
+    color: hsl(var(--sw-muted-foreground));
+    font-size: var(--sw-font-size);
+  }
 
-.swipe-button-container.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+  .swipe-button__root[data-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.swipe-button-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background-color: #4caf50; /* Example success color */
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  white-space: nowrap;
-}
+  .swipe-button__rail {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--sw-transition-duration) ease-in-out;
+  }
 
-.swipe-button-overlay-text {
-  color: white;
-  font-weight: bold;
-}
+  .swipe-button__root[data-swiping='true'] .swipe-button__rail {
+    opacity: 0;
+  }
 
-.swipe-button-rail-text {
-  flex-grow: 1;
-  text-align: center;
-  color: #555;
-  padding: 0 60px; /* Give space for the slider */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .swipe-button__overlay {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hsl(var(--sw-success));
+    color: hsl(var(--sw-foreground));
+    font-weight: 500;
+    pointer-events: none;
+  }
+  
+  .swipe-button__root[data-reverse='true'] .swipe-button__overlay {
+    left: auto;
+    right: 0;
+  }
 
-.swipe-button-slider {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 50px; /* Example width */
-  background-color: #ffffff; /* Default slider color */
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: grab;
-}
+  .swipe-button__slider {
+    position: absolute;
+    inset-block: 0;
+    width: var(--sw-slider-width);
+    height: 100%;
+    background-color: hsl(var(--sw-slider));
+    border-radius: var(--sw-border-radius);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 
-.swipe-button-slider:active {
-  cursor: grabbing;
-}
+  .swipe-button__slider:active {
+    cursor: grabbing;
+  }
 `;
 
-export interface SwipeButtonProps {
+interface SwipeContextType {
+  isSwiping: boolean;
+  sliderPosition: number;
+  overlayWidth: number;
+  disabled: boolean;
+  reverseSwipe: boolean;
+  containerRef: React.RefObject<HTMLDivElement>;
+  sliderRef: React.RefObject<HTMLDivElement>;
+  handleDragStart: (e: React.MouseEvent | React.TouchEvent) => void;
+}
+
+const SwipeContext = createContext<SwipeContextType | null>(null);
+const useSwipeContext = () => {
+  const context = useContext(SwipeContext);
+  if (!context) {
+    throw new Error(
+      "SwipeButton components must be used within a SwipeButton.Root"
+    );
+  }
+  return context;
+};
+
+interface SwipeButtonRootProps extends React.HTMLAttributes<HTMLDivElement> {
   onSuccess: () => void;
   onFail?: () => void;
   disabled?: boolean;
   reverseSwipe?: boolean;
-
-  title?: string;
-  railText?: string;
-  overlayText?: string;
-  children?: React.ReactNode;
-
   delta?: number;
 }
 
-export const SwipeButton = ({
-  title,
-  railText,
-  overlayText,
-  children,
-  disabled = false,
-  delta,
-  reverseSwipe,
-  onSuccess,
-  onFail,
-  // ... other props will be used later
-}: SwipeButtonProps) => {
-  const [isSwiping, setIsSwiping] = useState(false);
+const Root = forwardRef<HTMLDivElement, SwipeButtonRootProps>(
+  (
+    {
+      className,
+      style,
+      children,
+      onSuccess,
+      onFail,
+      disabled = false,
+      reverseSwipe = false,
+      delta,
+      ...props
+    },
+    ref
+  ) => {
+    const [isSwiping, setIsSwiping] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(0);
   const [overlayWidth, setOverlayWidth] = useState(0);
   const [initialSliderPosition, setInitialSliderPosition] = useState(0);
@@ -240,41 +268,76 @@ export const SwipeButton = ({
     window.removeEventListener("mouseup", handleDragEnd);
     window.removeEventListener("touchend", handleDragEnd);
   };
+  useEffect(() => {
+      // This is a dummy effect that returns a cleanup function to be run on unmount.
+      // The actual event listeners are cleaned up in handleEnd.
+      return () => {
+           window.removeEventListener("mousemove", () => {});
+           window.removeEventListener("touchmove", () => {});
+           window.removeEventListener("mouseup", () => {});
+           window.removeEventListener("touchend", () => {});
+      }
+    }, [])
+        const contextValue = { isSwiping, sliderPosition, overlayWidth, disabled, reverseSwipe, containerRef, sliderRef, handleDragStart };
 
-  return (
-    <>
-      <style>{styles}</style>
+    return (
+      <SwipeContext.Provider value={contextValue as SwipeContextType}>
+        <style>{defaultStyles}</style>
+        <div
+          ref={containerRef}
+          className={`swipe-button__root ${className || ""}`}
+          style={style}
+          data-disabled={disabled}
+          data-swiping={isSwiping}
+          data-reverse={reverseSwipe}
+          {...props}
+        >
+          {children}
+        </div>
+      </SwipeContext.Provider>
+    );
+  }
+);
+Root.displayName = "SwipeButton.Root";
+
+const Rail = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={`swipe-button__rail ${className || ""}`} {...props} />
+  )
+);
+Rail.displayName = "SwipeButton.Rail";
+
+const Overlay = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, style, ...props }, ref) => {
+    const { overlayWidth } = useSwipeContext();
+    return (
       <div
-      ref={containerRef}
-      className={`swipe-button-container ${disabled ? "disabled" : ""}`}
-      aria-label={title || "Swipe button"}
-    >
-      {/* Overlay that reveals on swipe */}
-      <div
-        className="swipe-button-overlay"
-        style={{
-          width: `${overlayWidth}px`,
-          // Align the overlay to the right for reverse swipe
-          [reverseSwipe ? "right" : "left"]: "0",
-        }}
-      >
-        <span className="swipe-button-overlay-text">{overlayText}</span>
-      </div>
+        ref={ref}
+        className={`swipe-button__overlay ${className || ""}`}
+        style={{ width: `${overlayWidth}px`, ...style }}
+        {...props}
+      />
+    );
+  }
+);
+Overlay.displayName = "SwipeButton.Overlay";
 
-      {/* The visible text on the rail */}
-      {!isSwiping && <span className="swipe-button-rail-text">{railText}</span>}
-
-      {/* The draggable slider */}
+const Slider = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, style, ...props }, ref) => {
+    const { sliderPosition, handleDragStart, sliderRef } = useSwipeContext();
+    return (
       <div
         ref={sliderRef}
-        className="swipe-button-slider"
-        style={{ left: `${sliderPosition}px` }}
+        className={`swipe-button__slider ${className || ""}`}
+        style={{ transform: `translateX(${sliderPosition}px)`, ...style }}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
-      >
-        {children}
-      </div>
-      </div>
-    </>
-  );
-};
+        {...props}
+      />
+    );
+  }
+);
+Slider.displayName = "SwipeButton.Slider";
+
+export const SwipeButton = { Root, Rail, Overlay, Slider };
+

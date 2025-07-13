@@ -29,9 +29,19 @@ export default function Web() {
         <div style={styles.variantCard}>
           <h3 style={styles.variantTitle}>Sleek Dark Mode</h3>
           <div style={{...styles.swipeContainer, ...styles.darkTheme}}>
-            <SwipeButton railText="Swipe to unlock" onSuccess={() => handleSuccess('Dark')}>
-              <div style={styles.sliderContent}><Lock /></div>
-            </SwipeButton>
+            <SwipeButton.Root  onSuccess={() => alert("Success!")}>
+        <SwipeButton.Rail>
+          <span>Swipe to Confirm</span>
+        </SwipeButton.Rail>
+        <SwipeButton.Overlay>
+          <span>Confirmed!</span>
+        </SwipeButton.Overlay>
+        <SwipeButton.Slider>
+          <svg fill="hsl(var(--sw-background))" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+          </svg>
+        </SwipeButton.Slider>
+      </SwipeButton.Root>
           </div>
         </div>
 
@@ -39,9 +49,7 @@ export default function Web() {
         <div style={styles.variantCard}>
           <h3 style={styles.variantTitle}>Destructive Action</h3>
           <div style={{...styles.swipeContainer, ...styles.destructiveTheme}}>
-            <SwipeButton railText="Swipe to Delete" overlayText="Deleted" onSuccess={() => handleSuccess('Destructive')}>
-              <div style={styles.sliderContent}><Trash /></div>
-            </SwipeButton>
+            
           </div>
         </div>
 
@@ -49,9 +57,7 @@ export default function Web() {
         <div style={styles.variantCard}>
           <h3 style={styles.variantTitle}>Minimalist</h3>
           <div style={{...styles.swipeContainer, ...styles.minimalTheme}}>
-            <SwipeButton railText="Confirm" onSuccess={() => handleSuccess('Minimal')}>
-               <div style={{...styles.sliderContent, color: '#333'}}><ChevronRight /></div>
-            </SwipeButton>
+            
           </div>
         </div>
         
@@ -59,9 +65,7 @@ export default function Web() {
         <div style={styles.variantCard}>
           <h3 style={styles.variantTitle}>Reverse Neon</h3>
           <div style={{...styles.swipeContainer, ...styles.neonTheme}}>
-            <SwipeButton railText="Swipe Left to Activate" reverseSwipe={true} onSuccess={() => handleSuccess('Neon')}>
-               <div style={{...styles.sliderContent, transform: 'rotate(180deg)', color: '#fff'}}><ChevronRight /></div>
-            </SwipeButton>
+            
           </div>
         </div>
 

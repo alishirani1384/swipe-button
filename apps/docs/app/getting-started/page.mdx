@@ -26,11 +26,16 @@ Follow these steps to add the swipe button to your project.
 
 ### Basic Usage
 
-Import the component and its base styles, then use it in your application.
+The component works out-of-the-box with a beautiful default dark theme. No separate CSS file is needed.
+
+Simply import the `SwipeButton` object and compose its parts to build your UI.
 
 ```jsx filename="YourComponent.jsx"
-import { SwipeButton } from 'swipe-button';
-import 'swipe-button/dist/styles.css';
+import { SwipeButton } from '@your-npm-username/react-swipe-button';
+
+// It's helpful to have an icon library, but not required.
+// Example using lucide-react:
+import { ChevronRight } from 'lucide-react';
 
 const App = () => {
   const handleSuccess = () => {
@@ -39,9 +44,18 @@ const App = () => {
 
   return (
     <div style={{ width: '300px' }}>
-      <SwipeButton railText="Swipe to proceed" onSuccess={handleSuccess}>
-        <span>>></span>
-      </SwipeButton>
+      <SwipeButton.Root onSuccess={handleSuccess}>
+        <SwipeButton.Rail>
+          <span>Swipe to Proceed</span>
+        </SwipeButton.Rail>
+        <SwipeButton.Overlay>
+          <span>Success!</span>
+        </SwipeButton.Overlay>
+        <SwipeButton.Slider>
+          {/* The slider uses a foreground color by default, so we give our icon a background color */}
+          <ChevronRight color="hsl(var(--sw-background))" />
+        </SwipeButton.Slider>
+      </SwipeButton.Root>
     </div>
   );
 };
