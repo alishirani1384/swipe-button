@@ -48,7 +48,7 @@ The component works out-of-the-box with a beautiful default dark theme. Simply c
 
 ```jsx
 import React from 'react';
-import { SwipeButton } from '@your-npm-username/react-swipe-button';
+import { SwipeButton } from 'swipe-button';
 import { ChevronRight } from 'lucide-react'; // Example using a popular icon library
 
 const App = () => {
@@ -156,7 +156,7 @@ The compound API works perfectly with CSS-in-JS libraries.
 
 ```jsx
 import styled from 'styled-components';
-import { SwipeButton } from '@your-npm-username/react-swipe-button';
+import { SwipeButton } from 'swipe-button';
 
 const StyledSlider = styled(SwipeButton.Slider)`
   background: linear-gradient(to right, #ff8a00, #e52e71);

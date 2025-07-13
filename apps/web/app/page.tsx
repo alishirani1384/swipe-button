@@ -1,121 +1,304 @@
 "use client";
-
 import { SwipeButton } from "swipe-button";
-import React from "react";
-
-// --- Some icons for our showcase ---
-const ChevronRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
-const Lock = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
-const Trash = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>;
-
+import React, { useState } from "react";
+import styles from "./page.module.css";
+import { ArrowRight, Check, ChevronRight, Code, Github, Palette, Settings, Sliders } from "./components/icons";
 
 export default function Web() {
-  const handleSuccess = (variant: string) => {
-    alert(`Success from the ${variant} variant!`);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("demo");
+  const [theme, setTheme] = useState("default");
+  const [reverseSwipe, setReverseSwipe] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  
+  const handleSuccess = () => {
+    setSuccessMessage("Success! Swipe action completed.");
+    setTimeout(() => setSuccessMessage(""), 3000);
+  };
+
+  const handleFail = () => {
+    setSuccessMessage("Swipe not completed.");
+    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   return (
-    <main style={styles.main}>
-      <div style={styles.hero}>
-        <h1 style={styles.title}>React Unstyled Swipe Button</h1>
-        <p style={styles.subtitle}>
-          A zero-dependency, fully customizable, and unstyled swipe button for modern React applications.
-        </p>
-      </div>
-
-      <div style={styles.showcaseGrid}>
-
-        {/* --- Variant 1: Sleek Dark --- */}
-        <div style={styles.variantCard}>
-          <h3 style={styles.variantTitle}>Sleek Dark Mode</h3>
-          <div style={{...styles.swipeContainer, ...styles.darkTheme}}>
-            <SwipeButton.Root  onSuccess={() => alert("Success!")}>
-        <SwipeButton.Rail>
-          <span>Swipe to Confirm</span>
-        </SwipeButton.Rail>
-        <SwipeButton.Overlay>
-          <span>Confirmed!</span>
-        </SwipeButton.Overlay>
-        <SwipeButton.Slider>
-          <svg fill="hsl(var(--sw-background))" width="20" height="20" viewBox="0 0 24 24">
-            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-          </svg>
-        </SwipeButton.Slider>
-      </SwipeButton.Root>
-          </div>
-        </div>
-
-        {/* --- Variant 2: Destructive Action --- */}
-        <div style={styles.variantCard}>
-          <h3 style={styles.variantTitle}>Destructive Action</h3>
-          <div style={{...styles.swipeContainer, ...styles.destructiveTheme}}>
-            
-          </div>
-        </div>
-
-        {/* --- Variant 3: Minimalist --- */}
-        <div style={styles.variantCard}>
-          <h3 style={styles.variantTitle}>Minimalist</h3>
-          <div style={{...styles.swipeContainer, ...styles.minimalTheme}}>
-            
-          </div>
-        </div>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>React Unstyled Swipe Button</h1>
+        <p className={styles.subtitle}>A lightweight, accessible swipe-to-action component for React</p>
         
-        {/* --- Variant 4: Reverse Neon --- */}
-        <div style={styles.variantCard}>
-          <h3 style={styles.variantTitle}>Reverse Neon</h3>
-          <div style={{...styles.swipeContainer, ...styles.neonTheme}}>
-            
-          </div>
+        <div className={styles.ctas}>
+          <a href="https://github.com/alishirani1384/swipe-button" target="_blank" rel="noopener noreferrer" className={styles.primary}>
+            <Github /> View on GitHub
+          </a>
+          <a href="/docs" className={styles.secondary}>
+            Documentation <ArrowRight />
+          </a>
+        </div>
+      </header>
+
+      <main className={styles.main}>
+        <div className={styles.tabs}>
+          <button 
+            className={`${styles.tab} ${activeTab === 'demo' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('demo')}
+          >
+            <Sliders /> Demo
+          </button>
+          <button 
+            className={`${styles.tab} ${activeTab === 'customize' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('customize')}
+          >
+            <Palette /> Customize
+          </button>
+          <button 
+            className={`${styles.tab} ${activeTab === 'code' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('code')}
+          >
+            <Code /> Code
+          </button>
         </div>
 
-      </div>
-    </main>
+        <div className={styles.tabContent}>
+          {activeTab === 'demo' && (
+            <div className={styles.demoContainer}>
+              <div className={styles.demoWrapper}>
+                <div className={`${styles.swipeDemo} ${styles[theme]}`}>
+                  <SwipeButton.Root 
+                    onSuccess={handleSuccess} 
+                    onFail={handleFail}
+                    disabled={disabled}
+                    reverseSwipe={reverseSwipe}
+                    className={styles.swipeButton}
+                  >
+                    <SwipeButton.Rail>
+                      {reverseSwipe ? "← Swipe to confirm" : "Swipe to confirm →"}
+                    </SwipeButton.Rail>
+                    <SwipeButton.Overlay>
+                      {reverseSwipe ? "← Confirmed!" : "Confirmed! →"}
+                    </SwipeButton.Overlay>
+                    <SwipeButton.Slider>
+                      <ChevronRight className={reverseSwipe ? styles.reverseIcon : ''} />
+                    </SwipeButton.Slider>
+                  </SwipeButton.Root>
+                </div>
+                {successMessage && (
+                  <div className={styles.successMessage}>
+                    <Check />
+                    <span>{successMessage}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className={styles.demoDescription}>
+                <h2>Swipe Button Component</h2>
+                <p>A fully customizable, unstyled, and accessible swipe-to-action button for React. Built from scratch with zero dependencies.</p>
+                <ul className={styles.featureList}>
+                  <li><Check /> Fully accessible</li>
+                  <li><Check /> Touch & mouse support</li>
+                  <li><Check /> Customizable styling</li>
+                  <li><Check /> Reverse direction support</li>
+                  <li><Check /> Success & fail callbacks</li>
+                  <li><Check /> Zero dependencies</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'customize' && (
+            <div className={styles.customizeContainer}>
+              <div className={styles.customizeOptions}>
+                <h2>Customize</h2>
+                <div className={styles.optionGroup}>
+                  <label>Theme</label>
+                  <div className={styles.themeSelector}>
+                    <button 
+                      className={`${styles.themeButton} ${theme === 'default' ? styles.activeTheme : ''}`}
+                      onClick={() => setTheme('default')}
+                    >
+                      Default
+                    </button>
+                    <button 
+                      className={`${styles.themeButton} ${theme === 'blue' ? styles.activeTheme : ''}`}
+                      onClick={() => setTheme('blue')}
+                    >
+                      Blue
+                    </button>
+                    <button 
+                      className={`${styles.themeButton} ${theme === 'green' ? styles.activeTheme : ''}`}
+                      onClick={() => setTheme('green')}
+                    >
+                      Green
+                    </button>
+                    <button 
+                      className={`${styles.themeButton} ${theme === 'purple' ? styles.activeTheme : ''}`}
+                      onClick={() => setTheme('purple')}
+                    >
+                      Purple
+                    </button>
+                  </div>
+                </div>
+                
+                <div className={styles.optionGroup}>
+                  <label>Direction</label>
+                  <div className={styles.toggleGroup}>
+                    <button 
+                      className={`${styles.toggleButton} ${!reverseSwipe ? styles.activeToggle : ''}`}
+                      onClick={() => setReverseSwipe(false)}
+                    >
+                      Left to Right
+                    </button>
+                    <button 
+                      className={`${styles.toggleButton} ${reverseSwipe ? styles.activeToggle : ''}`}
+                      onClick={() => setReverseSwipe(true)}
+                    >
+                      Right to Left
+                    </button>
+                  </div>
+                </div>
+                
+                <div className={styles.optionGroup}>
+                  <label>State</label>
+                  <div className={styles.toggleGroup}>
+                    <button 
+                      className={`${styles.toggleButton} ${!disabled ? styles.activeToggle : ''}`}
+                      onClick={() => setDisabled(false)}
+                    >
+                      Enabled
+                    </button>
+                    <button 
+                      className={`${styles.toggleButton} ${disabled ? styles.activeToggle : ''}`}
+                      onClick={() => setDisabled(true)}
+                    >
+                      Disabled
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className={styles.customizePreview}>
+                <div className={`${styles.swipeDemo} ${styles[theme]}`}>
+                  <SwipeButton.Root 
+                    onSuccess={handleSuccess} 
+                    onFail={handleFail}
+                    disabled={disabled}
+                    reverseSwipe={reverseSwipe}
+                    className={styles.swipeButton}
+                  >
+                    <SwipeButton.Rail>
+                      {reverseSwipe ? "← Swipe to confirm" : "Swipe to confirm →"}
+                    </SwipeButton.Rail>
+                    <SwipeButton.Overlay>
+                      {reverseSwipe ? "← Confirmed!" : "Confirmed! →"}
+                    </SwipeButton.Overlay>
+                    <SwipeButton.Slider>
+                      <ChevronRight className={reverseSwipe ? styles.reverseIcon : ''} />
+                    </SwipeButton.Slider>
+                  </SwipeButton.Root>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'code' && (
+            <div className={styles.codeContainer}>
+              <h2>Installation</h2>
+              <div className={styles.codeBlock}>
+                <code>npm install swipe-button</code>
+                <button className={styles.copyButton} onClick={() => navigator.clipboard.writeText('npm install swipe-button')}>Copy</button>
+              </div>
+              
+              <h2>Usage</h2>
+              <div className={styles.codeBlock}>
+                <pre>{`import { SwipeButton } from "swipe-button";
+
+export default function MyComponent() {
+  const handleSuccess = () => {
+    console.log("Swipe action completed!");
+  };
+
+  return (
+    <SwipeButton.Root onSuccess={handleSuccess}>
+      <SwipeButton.Rail>
+        Swipe to confirm →
+      </SwipeButton.Rail>
+      <SwipeButton.Overlay>
+        Confirmed! →
+      </SwipeButton.Overlay>
+      <SwipeButton.Slider>
+        →
+      </SwipeButton.Slider>
+    </SwipeButton.Root>
+  );
+}`}</pre>
+                <button className={styles.copyButton} onClick={() => navigator.clipboard.writeText(`import { SwipeButton } from "swipe-button";
+
+export default function MyComponent() {
+  const handleSuccess = () => {
+    console.log("Swipe action completed!");
+  };
+
+  return (
+    <SwipeButton.Root onSuccess={handleSuccess}>
+      <SwipeButton.Rail>
+        Swipe to confirm →
+      </SwipeButton.Rail>
+      <SwipeButton.Overlay>
+        Confirmed! →
+      </SwipeButton.Overlay>
+      <SwipeButton.Slider>
+        →
+      </SwipeButton.Slider>
+    </SwipeButton.Root>
+  );
+}`)}>Copy</button>
+              </div>
+              
+              <h2>Props</h2>
+              <div className={styles.propsTable}>
+                <div className={styles.propRow}>
+                  <div className={styles.propName}>onSuccess</div>
+                  <div className={styles.propType}>() {"=>"} void</div>
+                  <div className={styles.propDesc}>Callback function when swipe is completed successfully</div>
+                </div>
+                <div className={styles.propRow}>
+                  <div className={styles.propName}>onFail</div>
+                  <div className={styles.propType}>() {"=>"} void</div>
+                  <div className={styles.propDesc}>Optional callback when swipe is not completed</div>
+                </div>
+                <div className={styles.propRow}>
+                  <div className={styles.propName}>disabled</div>
+                  <div className={styles.propType}>boolean</div>
+                  <div className={styles.propDesc}>Whether the swipe button is disabled</div>
+                </div>
+                <div className={styles.propRow}>
+                  <div className={styles.propName}>reverseSwipe</div>
+                  <div className={styles.propType}>boolean</div>
+                  <div className={styles.propDesc}>Whether to reverse the swipe direction (right to left)</div>
+                </div>
+                <div className={styles.propRow}>
+                  <div className={styles.propName}>delta</div>
+                  <div className={styles.propType}>number</div>
+                  <div className={styles.propDesc}>Optional threshold for successful swipe (in pixels)</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <footer className={styles.footer}>
+        <a href="https://github.com/alishirani1384/swipe-button" target="_blank" rel="noopener noreferrer">
+          <Github /> GitHub
+        </a>
+        <a href="/docs">
+          <Settings /> Documentation
+        </a>
+        <a href="/examples">
+          <Code /> Examples
+        </a>
+      </footer>
+    </div>
   );
 }
 
-// --- Styles for the showcase page ---
-// For a real project, you'd likely use CSS Modules or a styling library.
-const styles: { [key: string]: React.CSSProperties } = {
-  main: { fontFamily: 'sans-serif', background: '#f9f9f9', minHeight: '100vh', padding: '2rem' },
-  hero: { textAlign: 'center', marginBottom: '4rem' },
-  title: { fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' },
-  subtitle: { fontSize: '1.2rem', color: '#555', maxWidth: '600px', margin: '0 auto' },
-  showcaseGrid: { display: 'grid', gap: '2rem', maxWidth: '900px', margin: '0 auto', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))' },
-  variantCard: { background: '#fff', borderRadius: '8px', padding: '1.5rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
-  variantTitle: { marginBottom: '1rem', color: '#333', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' },
-  swipeContainer: {
-    // Overriding the default component styles using CSS variables
-    '--swipe-button-height': '56px',
-    '--swipe-button-border-radius': '12px',
-    '--swipe-slider-width': '56px',
-  } as React.CSSProperties,
-  darkTheme: {
-    '--swipe-bg-color': '#222',
-    '--swipe-rail-text-color': '#888',
-    '--swipe-overlay-color': '#0070f3',
-    '--swipe-slider-color': '#333',
-    color: '#fff',
-  } as React.CSSProperties,
-  destructiveTheme: {
-    '--swipe-bg-color': '#FFEBEB',
-    '--swipe-rail-text-color': '#A63333',
-    '--swipe-overlay-color': '#DC2626',
-    '--swipe-slider-color': '#fff',
-    color: '#DC2626',
-  } as React.CSSProperties,
-  minimalTheme: {
-    '--swipe-bg-color': '#EAEAEA',
-    '--swipe-rail-text-color': '#777',
-    '--swipe-overlay-color': '#D1D1D1',
-    '--swipe-slider-color': '#fff',
-  } as React.CSSProperties,
-  neonTheme: {
-    '--swipe-bg-color': '#111',
-    '--swipe-rail-text-color': '#888',
-    '--swipe-overlay-color': '#F400F4',
-    '--swipe-slider-color': '#330033',
-    '--swipe-slider-box-shadow': '0 0 15px #F400F4',
-  } as React.CSSProperties,
-  sliderContent: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
-};
