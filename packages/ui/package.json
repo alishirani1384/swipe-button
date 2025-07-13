@@ -1,6 +1,6 @@
 {
   "name": "swipe-button",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "private": false,
   "description": "A lightweight, unstyled, and fully accessible swipe-to-action button for React. Built with zero dependencies.",
   "author": "Your Name <alishiranii1384@gmail.com>",

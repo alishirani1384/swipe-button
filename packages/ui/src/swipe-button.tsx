@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useCallback,
 } from "react";
 
 const defaultStyles = `
@@ -205,27 +206,13 @@ const Root = forwardRef<HTMLDivElement, SwipeButtonRootProps>(
     const [sliderPosition, setSliderPosition] = useState(0);
     const [overlayWidth, setOverlayWidth] = useState(0);
     const [initialSliderPosition, setInitialSliderPosition] = useState(0);
+    const [hasSucceeded, setHasSucceeded] = useState(false);
 
-    // We will add mouse and touch event handlers here later
     const sliderRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-
     const isDragging = useRef(false);
     const startX = useRef(0);
-
-    useEffect(() => {
-      const cleanup = () => {
-        window.removeEventListener("mousemove", handleDragging);
-        window.removeEventListener("touchmove", handleDragging);
-        window.removeEventListener("mouseup", handleDragEnd);
-        window.removeEventListener("touchend", handleDragEnd);
-      };
-
-      // The return function from useEffect serves as the cleanup
-      return () => {
-        cleanup();
-      };
-    }, []);
+    const positionRef = useRef(0);
 
     useEffect(() => {
       const containerWidth = containerRef.current?.offsetWidth || 0;
@@ -235,33 +222,11 @@ const Root = forwardRef<HTMLDivElement, SwipeButtonRootProps>(
       const startPos = reverseSwipe ? endPosition : 0;
       setInitialSliderPosition(startPos);
       setSliderPosition(startPos);
+      positionRef.current = startPos;
+      setOverlayWidth(sliderWidth / 2);
     }, [reverseSwipe]);
 
-    const handleDragStart = (
-      e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-    ) => {
-      if (disabled) return;
-
-      isDragging.current = true;
-      setIsSwiping(true); // Show overlay and hide rail text
-
-      // Determine starting X position from either mouse or touch event
-      if ("touches" in e) {
-        const touch = e.touches[0];
-        if (!touch) return;
-        startX.current = touch.clientX;
-      } else {
-        startX.current = e.clientX;
-      }
-
-      // Add listeners to the window to track movement and release
-      window.addEventListener("mousemove", handleDragging);
-      window.addEventListener("touchmove", handleDragging);
-      window.addEventListener("mouseup", handleDragEnd);
-      window.addEventListener("touchend", handleDragEnd);
-    };
-
-    const handleDragging = (e: MouseEvent | TouchEvent) => {
+    const handleDragging = useCallback((e: MouseEvent | TouchEvent) => {
       if (!isDragging.current) return;
 
       let currentX;
@@ -272,30 +237,45 @@ const Root = forwardRef<HTMLDivElement, SwipeButtonRootProps>(
       } else {
         currentX = e.clientX;
       }
-      const displacement = reverseSwipe
-        ? startX.current - currentX
-        : currentX - startX.current;
+      const displacement = currentX - startX.current;
       let newPosition = initialSliderPosition + displacement;
 
-      // Get container and slider dimensions from our refs
       const containerWidth = containerRef.current?.offsetWidth || 0;
       const sliderWidth = sliderRef.current?.offsetWidth || 0;
       const swipeableWidth = containerWidth - sliderWidth;
 
-      // Constrain the slider's position within the container boundaries
-      if (newPosition < 0) newPosition = 0;
-      if (newPosition > swipeableWidth) newPosition = swipeableWidth;
+      newPosition = Math.max(0, Math.min(newPosition, swipeableWidth));
 
       setSliderPosition(newPosition);
+      positionRef.current = newPosition;
 
       const overlayWidthValue = reverseSwipe
-        ? containerWidth - newPosition
+        ? containerWidth - (newPosition + sliderWidth / 2)
         : newPosition + sliderWidth / 2;
 
-      setOverlayWidth(overlayWidthValue); // Center overlay behind slider
-    };
+      setOverlayWidth(overlayWidthValue);
 
-    const handleDragEnd = () => {
+      const successThreshold = delta ?? swipeableWidth;
+      const isSuccess = reverseSwipe
+        ? newPosition <= initialSliderPosition - successThreshold
+        : newPosition >= successThreshold;
+
+      if (isSuccess) {
+        const endPosition = reverseSwipe ? 0 : swipeableWidth;
+        setSliderPosition(endPosition);
+        positionRef.current = endPosition;
+        setOverlayWidth(containerWidth);
+        onSuccess();
+        setHasSucceeded(true);
+        isDragging.current = false;
+        window.removeEventListener("mousemove", handleDragging);
+        window.removeEventListener("touchmove", handleDragging);
+        window.removeEventListener("mouseup", handleDragEnd);
+        window.removeEventListener("touchend", handleDragEnd);
+      }
+    }, [initialSliderPosition, reverseSwipe, containerRef, sliderRef, delta, onSuccess, setHasSucceeded, setSliderPosition, setOverlayWidth]);
+
+    const handleDragEnd = useCallback(() => {
       if (!isDragging.current) return;
 
       isDragging.current = false;
@@ -304,44 +284,62 @@ const Root = forwardRef<HTMLDivElement, SwipeButtonRootProps>(
       const sliderWidth = sliderRef.current?.offsetWidth || 0;
       const swipeableWidth = containerWidth - sliderWidth;
 
-      // Use the delta prop if provided, otherwise default to the full width
       const successThreshold = delta ?? swipeableWidth;
 
       const isSuccess = reverseSwipe
-        ? sliderPosition <= initialSliderPosition - successThreshold
-        : sliderPosition >= successThreshold;
+        ? positionRef.current <= initialSliderPosition - successThreshold
+        : positionRef.current >= successThreshold;
 
       if (isSuccess) {
-        // ---- SUCCESS ----
-        onSuccess();
         const endPosition = reverseSwipe ? 0 : swipeableWidth;
         setSliderPosition(endPosition);
+        positionRef.current = endPosition;
         setOverlayWidth(containerWidth);
+        onSuccess();
+        setHasSucceeded(true);
       } else {
-        // ---- FAIL ----
         onFail?.();
-        // Reset the slider and overlay to the beginning
         setSliderPosition(initialSliderPosition);
-        setOverlayWidth(0);
-        setIsSwiping(false); // Hide overlay and show rail text again
+        positionRef.current = initialSliderPosition;
+        setOverlayWidth(sliderWidth / 2);
+        setIsSwiping(false);
       }
 
-      // Clean up global event listeners
       window.removeEventListener("mousemove", handleDragging);
       window.removeEventListener("touchmove", handleDragging);
       window.removeEventListener("mouseup", handleDragEnd);
       window.removeEventListener("touchend", handleDragEnd);
-    };
+    }, [reverseSwipe, initialSliderPosition, delta, containerRef, sliderRef, onSuccess, setHasSucceeded, onFail, setIsSwiping, setSliderPosition, setOverlayWidth, handleDragging]);
+
+    const handleDragStart = useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      if (disabled || hasSucceeded) return;
+
+      isDragging.current = true;
+      setIsSwiping(true);
+
+      let clientX;
+      if ("touches" in e) {
+        clientX = e.touches[0]?.clientX ?? 0;
+      } else {
+        clientX = e.clientX;
+      }
+      startX.current = clientX;
+
+      window.addEventListener("mousemove", handleDragging);
+      window.addEventListener("touchmove", handleDragging);
+      window.addEventListener("mouseup", handleDragEnd);
+      window.addEventListener("touchend", handleDragEnd);
+    }, [disabled, hasSucceeded, setIsSwiping, handleDragging, handleDragEnd]);
+
     useEffect(() => {
-      // This is a dummy effect that returns a cleanup function to be run on unmount.
-      // The actual event listeners are cleaned up in handleEnd.
       return () => {
-        window.removeEventListener("mousemove", () => {});
-        window.removeEventListener("touchmove", () => {});
-        window.removeEventListener("mouseup", () => {});
-        window.removeEventListener("touchend", () => {});
+        window.removeEventListener("mousemove", handleDragging);
+        window.removeEventListener("touchmove", handleDragging);
+        window.removeEventListener("mouseup", handleDragEnd);
+        window.removeEventListener("touchend", handleDragEnd);
       };
-    }, []);
+    }, [handleDragging, handleDragEnd]);
+
     const contextValue = {
       isSwiping,
       sliderPosition,
