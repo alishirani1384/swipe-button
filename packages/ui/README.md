@@ -8,12 +8,9 @@ A lightweight, unstyled, and fully accessible swipe-to-action button for modern 
 
 ---
 
-### [**Live Demo & Showcase →**](https://your-homepage-url.com)
+### [**Live Demo & Showcase →**](https://swipe-button.vercel.app/)
 
-*(Link to your deployed `apps/web` homepage)*
-
-![React Swipe Button Showcase GIF](https://your-link-to-a-demo-gif.com/demo.gif)
-*(**Pro-tip:** Record a short GIF of your showcase page and upload it here!)*
+![React Swipe Button Showcase video](https://github.com/alishirani1384/swipe-button/blob/main/preview.mp4)
 
 ## Why React Unstyled Swipe Button?
 
