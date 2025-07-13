@@ -92,7 +92,6 @@
   padding: 12px 16px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
   font-family: var(--font-geist-sans);
   font-size: 16px;
   font-weight: 500;
@@ -107,7 +106,7 @@
 }
 
 .activeTab {
-  border-bottom: 2px solid var(--foreground);
+  border-bottom: 2px solid white;
   opacity: 1;
 }
 

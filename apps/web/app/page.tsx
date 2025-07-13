@@ -31,9 +31,6 @@ export default function Web() {
           <a href="https://github.com/alishirani1384/swipe-button" target="_blank" rel="noopener noreferrer" className={styles.primary}>
             <Github /> View on GitHub
           </a>
-          <a href="/docs" className={styles.secondary}>
-            Documentation <ArrowRight />
-          </a>
         </div>
       </header>
 
