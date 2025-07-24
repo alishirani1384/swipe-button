@@ -384,23 +384,64 @@
 }
 
 /* Theme Variants */
+.default .swipeButton {
+  --sw-height: 56px;
+  --sw-slider-width: 56px;
+}
+
+.default :global(.swipe-button__root) {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
+.default :global(.swipe-button__overlay) {
+  background-color: #000000;
+  color: white;
+}
+
+.default :global(.swipe-button__slider) {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .default :global(.swipe-button__root) {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  .default :global(.swipe-button__overlay) {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  .default :global(.swipe-button__slider) {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
 .blue .swipeButton {
   --sw-height: 56px;
   --sw-slider-width: 56px;
 }
 
-.blue .swipe-button__root {
+.blue :global(.swipe-button__root) {
   background-color: rgba(0, 122, 255, 0.1);
   border-color: rgba(0, 122, 255, 0.3);
   color: #007aff;
 }
 
-.blue .swipe-button__overlay {
+.blue :global(.swipe-button__overlay) {
   background-color: #007aff;
   color: white;
 }
 
-.blue .swipe-button__slider {
+.blue :global(.swipe-button__slider) {
   background-color: #007aff;
   color: white;
 }
@@ -410,18 +451,18 @@
   --sw-slider-width: 56px;
 }
 
-.green .swipe-button__root {
+.green :global(.swipe-button__root) {
   background-color: rgba(52, 199, 89, 0.1);
   border-color: rgba(52, 199, 89, 0.3);
   color: #34c759;
 }
 
-.green .swipe-button__overlay {
+.green :global(.swipe-button__overlay) {
   background-color: #34c759;
   color: white;
 }
 
-.green .swipe-button__slider {
+.green :global(.swipe-button__slider) {
   background-color: #34c759;
   color: white;
 }
@@ -431,18 +472,18 @@
   --sw-slider-width: 56px;
 }
 
-.purple .swipe-button__root {
+.purple :global(.swipe-button__root) {
   background-color: rgba(175, 82, 222, 0.1);
   border-color: rgba(175, 82, 222, 0.3);
   color: #af52de;
 }
 
-.purple .swipe-button__overlay {
+.purple :global(.swipe-button__overlay) {
   background-color: #af52de;
   color: white;
 }
 
-.purple .swipe-button__slider {
+.purple :global(.swipe-button__slider) {
   background-color: #af52de;
   color: white;
 }
