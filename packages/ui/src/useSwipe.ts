@@ -53,7 +53,7 @@ export function useSwipe({
       currentX = e.clientX;
     }
     const displacement = currentX - startX.current;
-    let newPosition = initialSliderPosition + (reverseSwipe ? -displacement : displacement);
+    let newPosition = initialSliderPosition + displacement;
 
     const containerWidth = containerRef.current?.offsetWidth || 0;
     const sliderWidth = sliderRef.current?.offsetWidth || 0;
@@ -71,10 +71,10 @@ export function useSwipe({
     setOverlayWidth(overlayWidthValue);
 
     checkSuccess(newPosition, swipeableWidth);
-  }, [initialSliderPosition, reverseSwipe, delta, onSuccess]);
+  }, [initialSliderPosition, delta, onSuccess]);
 
   const checkSuccess = useCallback((currentPosition: number, swipeableWidth: number) => {
-    const successThreshold = delta ?? swipeableWidth;
+    const successThreshold = delta ?? (reverseSwipe ? 0 : swipeableWidth);
     const isSuccess = reverseSwipe
       ? currentPosition <= successThreshold
       : currentPosition >= successThreshold;
@@ -146,9 +146,9 @@ export function useSwipe({
     let newPosition = positionRef.current;
 
     if (e.key === "ArrowRight" || e.key === "ArrowUp") {
-      newPosition += reverseSwipe ? -step : step;
+      newPosition += step;
     } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
-      newPosition += reverseSwipe ? step : -step;
+      newPosition -= step;
     } else {
       return;
     }
@@ -173,7 +173,7 @@ export function useSwipe({
         handleDragEnd();
       }
     }
-  }, [disabled, hasSucceeded, reverseSwipe, checkSuccess, handleDragEnd]);
+  }, [disabled, hasSucceeded, checkSuccess, handleDragEnd]);
 
   useEffect(() => {
     return () => {
